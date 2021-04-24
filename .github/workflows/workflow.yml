@@ -1,0 +1,30 @@
+name: default
+on:
+  push:
+    branches: [ default ]
+  pull_request:
+    branches: [ default ]
+defaults:
+  run:
+    shell: bash
+jobs:
+  default:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        toolchain: [stable, beta, nightly]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: alyxcode/alyx_setup_rust_action@default
+        with: 
+          toolchain: ${{ matrix.toolchain }}
+          components: 'rustfmt, clippy'
+      - uses: alyxcode/alyx_checkout_action@default
+      - run: cargo check --workspace --all-targets --all-features
+      - run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
+      - run: cargo fmt --all -- --check
+      - run: cargo build --workspace --all-targets --all-features
+      - run: cargo test --workspace --all-targets --all-features
+      - run: cargo test --workspace --doc --all-features
+      - run: cargo doc --no-deps --workspace --all-features
