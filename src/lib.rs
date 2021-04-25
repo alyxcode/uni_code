@@ -4,7 +4,7 @@ pub fn encode_to_string<T: Unicode>(value: &T) -> Result<String, Error> {
     Ok(encoder.string)
 }
 
-pub fn decode_from_str<'str, T: Unicode>(str: &'str str) -> Result<T, Error> {
+pub fn decode_from_str<T: Unicode>(str: &str) -> Result<T, Error> {
     let mut decoder = StrDecoder::new(str);
     let value = Unicode::decode(&mut decoder)?;
     Ok(value)
